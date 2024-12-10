@@ -11,15 +11,18 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        console.log("Login function called with:", { email, password });
         try {
-            const response = await axios.post('http://localhost:3000/users/login', { email, password });
+            const response = await axios.post('http://localhost:3000/auth/login', { email, password });
+            console.log("Login Response:", response); // Log the response for debugging
             localStorage.setItem('token', response.data.token);
-            navigate('/dashboard');  // Redirect to dashboard on successful login
+            navigate('/dashboard'); // Redirect to dashboard on successful login
         } catch (error) {
-            console.error("Login failed:", error.response.data);
+            console.error("Login failed:", error.response || error.message); // Log the error
             alert('Login failed. Please check your credentials.');
         }
     };
+    
 
     return (
         <Container>
@@ -94,13 +97,13 @@ const Button = styled.button`
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #254b3c;
     color: white;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s;
     &:hover {
-        background-color: #0056b3;
+        background-color: #254b3c;
     }
 `;
 

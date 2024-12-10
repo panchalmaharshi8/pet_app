@@ -1,8 +1,9 @@
 // src/services/api.js
 import axios from 'axios';
+import API_URL from '../config';
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000'
+    baseURL: API_URL//'http://localhost:3000'
 });
 
 // Automatically include token in headers

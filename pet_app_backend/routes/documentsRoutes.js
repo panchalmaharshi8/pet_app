@@ -1,16 +1,12 @@
+// routes/documentsRoutes.js
 const express = require('express');
 const router = express.Router();
-const documentsController = require('../controllers/documentsController');
+const authenticateToken = require('../middleware/authMiddleware');
 
-// Use `uploadDocument` for file uploads
-// console.log("uploadDocument in routes:", documentsController.uploadDocument);
-router.post('/upload', documentsController.uploadDocument);
-// Optional: Separate function for creating a document without file upload
-router.post('/', documentsController.createDocument);
-
-router.get('/', documentsController.getAllDocuments);
-router.put('/:id', documentsController.updateDocument);
-router.delete('/:id', documentsController.deleteDocument);
+// Protect the documents route
+router.get('/', authenticateToken, (req, res) => {
+    // Fetch documents from database
+    // Use req.user.userId to get user-specific documents
+});
 
 module.exports = router;
-
