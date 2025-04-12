@@ -17,6 +17,7 @@ const foldersRoutes = require('./routes/foldersRoutes');
 const documentsRoutes = require('./routes/documentsRoutes');
 const authRoutes = require('./routes/authRoutes'); // New auth route
 const medicalRecordsRoutes = require('./routes/medicalRecordsRoutes');
+const clinicsRoutes = require('./routes/clinicsRoutes');
 
 // Route Handling
 app.use(cors());
@@ -29,6 +30,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/medical-records', medicalRecordsRoutes);app.get('/', (req, res) => {
     res.send('Server is up and running!');
 });
+app.use('/api/clinics', clinicsRoutes); // ✅ THIS is the fix
+
+
 app.use((req, res, next) => {
     console.log(`🛑 Request NOT Matched: ${req.method} ${req.url}`);
     res.status(404).json({ error: "Route Not Found" });
@@ -37,6 +41,7 @@ app.use((req, res, next) => {
     console.log(`🔥 Incoming Request: ${req.method} ${req.url}`);
     next();
 });
+
 
 app._router.stack.forEach((middleware) => {
     if (middleware.route) {

@@ -27,7 +27,7 @@ router.post('/', authenticateToken, upload.single('photo'), async (req, res) => 
     const owner_id = req.user.userId; // This comes from the JWT token
 
     try {
-        const [result] = await db.promise().query(
+        const [result] = await db.query(
             'INSERT INTO pets (name, breed, birthday, photo_url, medical_summary, owner_id) VALUES (?, ?, ?, ?, ?, ?)',
             [name, breed, birthday, photo_url, '', owner_id]
         );
@@ -49,7 +49,7 @@ router.get('/', authenticateToken, async (req, res) => {
     console.log('Fetching pets for userId:', req.user.userId); // Debug log
     try {
         const userId = req.user.userId;
-        const [pets] = await db.promise().query('SELECT * FROM pets WHERE owner_id = ?', [userId]);
+        const [pets] = await db.query('SELECT * FROM pets WHERE owner_id = ?', [userId]);
         res.status(200).json(pets);
     } catch (err) {
         console.error('Error fetching pets:', err);
@@ -62,7 +62,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params; // Extract pet ID from route params
         const userId = req.user.userId; // Extract user ID from token
-        const [pet] = await db.promise().query('SELECT * FROM pets WHERE pet_id = ? AND owner_id = ?', [id, userId]);
+        const [pet] = await db.query('SELECT * FROM pets WHERE pet_id = ? AND owner_id = ?', [id, userId]);
 
         if (pet.length === 0) {
             return res.status(404).json({ error: 'Pet not found or access denied' });

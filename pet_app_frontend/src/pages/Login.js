@@ -1,143 +1,67 @@
-// src/pages/Login.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import { TextField, Button, Typography, Box, Link, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import axios from 'axios';
 
-const Login = () => {
+const Login = ({ updateAuthState }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        console.log("Login function called with:", { email, password });
         try {
             const response = await axios.post('http://localhost:3000/auth/login', { email, password });
-            console.log("Login Response:", response); // Log the response for debugging
+
+            // Save the token to localStorage
             localStorage.setItem('token', response.data.token);
-            navigate('/dashboard'); // Redirect to dashboard on successful login
+
+            // Update the authentication state
+            if (updateAuthState) updateAuthState();
+
+            // Navigate to the pets page
+            navigate('/pets');
         } catch (error) {
-            console.error("Login failed:", error.response || error.message); // Log the error
+            console.error('Login failed:', error.response?.data || error.message);
             alert('Login failed. Please check your credentials.');
         }
     };
-    
 
     return (
-        <Container>
-            <FormContainer>
-                <Title>Login</Title>
-                <Form onSubmit={handleLogin}>
-                    <Input 
-                        type="email" 
-                        placeholder="Email" 
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)} 
-                    />
-                    <Input 
-                        type="password" 
-                        placeholder="Password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                    />
-                    <Button type="submit">Login</Button>
-                </Form>
-            </FormContainer>
+        <Container maxWidth="xs" sx={{ mt: 8, textAlign: 'center' }}>
+            <Typography variant="h1" color="primary" gutterBottom>
+                Log-In
+            </Typography>
+            <Typography variant="body1">
+                Not Registered?{' '}
+                <Link onClick={() => navigate('/register')} style={{ cursor: 'pointer', color: '#3CB371' }}>
+                    Sign up here.
+                </Link>
+            </Typography>
+            <Box component="form" onSubmit={handleLogin} sx={{ mt: 3 }}>
+                <TextField
+                    label="Email"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                    label="Password"
+                    type="password"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                    Login
+                </Button>
+            </Box>
         </Container>
     );
 };
 
 export default Login;
-
-// Styled Components
-const Container = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f0f2f5;
-`;
-
-const FormContainer = styled.div`
-    background-color: #fff;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 400px;
-`;
-
-const Title = styled.h2`
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #333;
-`;
-
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-`;
-
-const Input = styled.input`
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    &:focus {
-        border-color: #007bff;
-        outline: none;
-    }
-`;
-
-const Button = styled.button`
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #254b3c;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    &:hover {
-        background-color: #254b3c;
-    }
-`;
-
-// import React, { useState } from 'react';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-
-// const Login = () => {
-//     const [email, setEmail] = useState('');
-//     const [password, setPassword] = useState('');
-//     const navigate = useNavigate();
-
-//     const handleLogin = async (e) => {
-//         e.preventDefault();
-//         try {
-//             const response = await axios.post('http://localhost:3000/users/login', { email, password });
-//             localStorage.setItem('token', response.data.token);
-//             navigate('/dashboard');  // Redirect to dashboard on successful login
-//         } catch (error) {
-//             console.error("Login failed:", error.response.data);
-//             alert('Login failed. Please check your credentials.');
-//         }
-//     };
-
-//     return (
-//         <div>
-//             <h2>Login</h2>
-//             <form onSubmit={handleLogin}>
-//                 <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-//                 <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-//                 <button type="submit">Login</button>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default Login;

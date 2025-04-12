@@ -1,32 +1,46 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
 import Login from './pages/Login';
 import Register from './pages/Register';
+import PetsPage from './pages/PetsPage';
+import PetProfile from './pages/PetProfile';
 import Dashboard from './pages/Dashboard';
-import PetsPage from './pages/PetsPage'; // Import the PetsPage component
+import RequestRecords from './pages/RequestRecords';
 
 function App() {
-    return (
-        <Router>
-            <nav>
-                <ul>
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/login">Login</Link></li>
-                    <li><Link to="/register">Register</Link></li>
-                    <li><Link to="/dashboard">Dashboard</Link></li>
-                    <li><Link to="/pets">Pets</Link></li> {/* New link to PetsPage */}
-                </ul>
-            </nav>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/pets" element={<PetsPage />} /> {/* Route to PetsPage */}
-                <Route path="/" element={<h2>Home Page Placeholder</h2>} />
-            </Routes>
-        </Router>
-    );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const updateAuthState = () => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  };
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login updateAuthState={updateAuthState} />} />
+        <Route path="/register" element={<Register />} />
+
+        {isAuthenticated ? (
+          <>
+            <Route path="/pets" element={<PetsPage />} />
+            <Route path="/pets/:id" element={<PetProfile />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/request-records" element={<RequestRecords />} />
+            <Route path="*" element={<Navigate to="/pets" />} /> {/* If logged in, go to pets */}
+          </>
+        ) : (
+          <Route path="*" element={<Navigate to="/login" />} /> // ❗ Forces login every time
+        )}
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

@@ -22,4 +22,46 @@ const deletePet = async (id) => {
     return response.data;
 };
 
-export default { getPets, createPet, updatePet, deletePet };
+const transferPetOwnership = async (petId, newOwnerEmail) => {
+    const token = localStorage.getItem('token');
+    const apiUrl = `${API_URL}/pets/change-owner`;
+    // const apiUrl = `${API_URL}/pets/transfer`;
+
+    console.log("🚀 API Request Being Sent:");
+    console.log("🔗 URL:", apiUrl);
+    console.log("📦 Request Body:", { petId, newOwnerEmail });
+    console.log("🔑 Token:", token);
+
+    try {
+        const response = await axios.put(apiUrl, 
+            { petId: parseInt(petId, 10), newOwnerEmail },
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            }
+        );
+        console.log("✅ Transfer Success:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("❌ Transfer Failed:", error.response?.data || error.message);
+    }
+};
+
+
+// const transferPetOwnership = async (petId, newOwnerEmail) => {
+//     const token = localStorage.getItem('token');
+//     console.log("🔑 Sending Token for Transfer:", token);
+
+//     const response = await axios.put(`${API_URL}/pets/transfer`,
+//         { petId: parseInt(petId, 10), newOwnerEmail },
+//         {
+//             headers: { Authorization: `Bearer ${token}` }
+//         }
+//     );
+
+//     console.log("✅ Transfer Success:", response.data);
+//     return response.data;
+// };
+
+
+export default { getPets, createPet, updatePet, deletePet, transferPetOwnership };
+

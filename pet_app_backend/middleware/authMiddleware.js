@@ -16,7 +16,7 @@ const authenticateToken = (req, res, next) => {
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET);
         console.log("✅ Token Verified:", verified);
-        req.user = { userId: verified.userId };
+        req.user = { userId: verified.userId }; // 🛑 Don't touch this!
 
         console.log("🛠 Calling next() to continue to controller...");
         next(); // ✅ Ensure next() is called
